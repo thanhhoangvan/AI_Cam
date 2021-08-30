@@ -1,0 +1,9 @@
+thanhhoangvan@T99:~$ nmap --open -p 554 192.168.53.*
+Starting Nmap 7.80 ( https://nmap.org ) at 2021-08-28 03:40 +07
+Nmap scan report for 192.168.53.105
+Host is up (0.00082s latency).
+
+PORT    STATE SERVICE
+554/tcp open  rtsp
+
+Nmap done: 256 IP addresses (4 hosts up) scanned in 2.58 seconds
