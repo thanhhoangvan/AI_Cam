@@ -1,4 +1,0 @@
-- Code không kết nối được tới camera ip
-fix: chuyển port về 5000
-port stream video: 554
-port ptz control: 5000

@@ -3,10 +3,10 @@
 import asyncio, sys
 from onvif import ONVIFCamera
 
-IP="192.168.53.105"   # Camera IP address
-PORT= 554          # Port
-USER="31863601"         # Username
-PASS="123"        # Password
+IP="192.168.53.109"   # Camera IP address
+PORT= 5000          # Port
+USER="admin"         # Username
+PASS="hoangthanh1999"        # Password
 
 
 XMAX = 1
