@@ -39,8 +39,12 @@ class FaceID:
     def show(self, image):
         pass
     
-    def deleteFace(self, image=None, name="Unknow"):
-        pass
+    def deleteFace(self, name="Unknow"):
+        for faceid in range(len(self.ListFaceName)):
+            if self.ListFaceName[faceid] == name:
+                self.ListFaceName.remove(name)
+                del self.ListEncodeFace[faceid:faceid+1]
+                break
 
 if __name__=='__main__':
     pass
