@@ -92,10 +92,8 @@ class RTSPStream:
     def stop(self):
         if self.mp_running.value == 1:
             self.mp_running.value = 0
-        time.sleep(0.1)
+        time.sleep(1.5) # waiting for all while loop breaked
 
-        self.HD_CaptureThread = None
-        self.SD_CaptureThread = None
 
         # Clean queue
         print('Cleanning queue....')
@@ -111,10 +109,15 @@ class RTSPStream:
         print("SD queue is cleaned:", self.queue_sd_frame.empty())
         
         print('Stopping Process Capture... ')
-        if self.processCapture is not None:
-            self.processCapture.join()
+        self.processCapture.join()
+        
+        self.HD_CaptureThread = None
+        self.SD_CaptureThread = None
 
 if __name__=='__main__':
+
+    HD_RESOLUTION = (1080, 1920, 3)
+    SD_RESOLUTION = (360, 640, 3)
 
     queue_frame_hd = Queue(maxsize=100)
     queue_frame_sd = Queue(maxsize=100)
@@ -134,12 +137,16 @@ if __name__=='__main__':
     rtsp_stream.start()
     print('Start Successful!')
     
+    hd_frame = np.ones(HD_RESOLUTION, dtype=np.uint8)
+    sd_frame = np.ones(SD_RESOLUTION, dtype=np.uint8)
+
     start_time = time.time()
-    while (time.time() - start_time) <= 30:
+    while (time.time() - start_time) <= 60:
         
-        hd_frame = queue_frame_hd.get()
-        sd_frame = queue_frame_sd.get()
-        
+        if not queue_frame_hd.empty():      # get method sẽ chờ đến khi queue có element để lấy
+            hd_frame = queue_frame_hd.get() # nếu không check trước thì kể cả clean queue cũng không join được process
+        if not queue_frame_sd.empty():
+            sd_frame = queue_frame_sd.get()
         # cv2.imshow('RTSP Streamming Result', hd_frame)
         cv2.imshow('RTSP Streamming Result', sd_frame)
 
