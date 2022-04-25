@@ -7,19 +7,14 @@
 +============================================================+
 """
 
-import os
 import time
 import face_recognition
-import matplotlib.pyplot as plt
 
 
 class FaceID:
     def __init__(self):
         self.ListFaceName = []
         self.ListEncodeFace = []
-
-    def loadData(self):
-        pass
 
     def getFaceLocation(self, image):
         return face_recognition.face_locations(image)
@@ -44,7 +39,13 @@ class FaceID:
                     Faces.append(self.ListFaceName[FaceID])
         return Faces
 
-    def show(self, image):
+    def loadListFaceID(self):
+        pass
+
+    def createFaceID(self):
+        pass
+
+    def saveListFaceID(self):
         pass
     
     def deleteFace(self, name="Unknow"):
