@@ -18,11 +18,14 @@ class FaceID:
         self.ListFaceName = []
         self.ListEncodeFace = []
 
+    def loadData(self):
+        pass
+
     def getFaceLocation(self, image):
-        return face_recognition.face_locations(image)[0]
+        return face_recognition.face_locations(image)
     
     def getFaceEncode(self, image):
-        return face_recognition.face_encodings(image)[0]
+        return face_recognition.face_encodings(image)
     
     def addNewFace(self, image, name="Unknow"):
         self.ListFaceName.append(name)
@@ -31,11 +34,16 @@ class FaceID:
     
     def recognition(self, image):
         FaceEncoded = self.getFaceEncode(image)
+        Faces = []
+        if len(FaceEncoded) < 1:
+            return None
         for FaceID in range(len(self.ListEncodeFace)):
-            result = face_recognition.compare_faces([self.ListEncodeFace[FaceID]], FaceEncoded)
-            if result:
-                return self.ListFaceName[FaceID]
-    
+            for face in FaceEncoded:
+                result = face_recognition.compare_faces([self.ListEncodeFace[FaceID]], face)
+                if result:
+                    Faces.append(self.ListFaceName[FaceID])
+        return Faces
+
     def show(self, image):
         pass
     
