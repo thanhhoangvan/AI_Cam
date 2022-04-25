@@ -60,13 +60,20 @@ class RTSPStream:
         cap = cv2.VideoCapture(URL)
 
         while mp_running.value == 1:
-            try:
-                _, frame = cap.read()
-                print('captured a frame from', URL)
-                # mp_frame.acquire()
-                mp_frame[:] = frame
-            except:
-                print('Error when capture frame from', URL)
+            ret, frame = cap.read()
+            if ret:
+                mp_frame.acquire()
+                mp_frame[:] = frame.flatten()
+                # try:
+                #     # mp_frame.release()
+                #     print('captured a frame from', URL)
+                # except ValueError:
+                #     print('Error when assign frame', URL)
+            else:
+                print('Can not capture from', URL)
+
+            time.sleep(0.001)
+        
         print("Stop capture from", URL)
 
     def update(self):
@@ -100,6 +107,9 @@ if __name__=='__main__':
     mp_FRAME_HD = Array("I", int(np.prod(HD_RESOLUTION)), lock=Lock())
     mp_FRAME_SD = Array("I", int(np.prod(SD_RESOLUTION)), lock=Lock())
 
+    hd_nparray = np.frombuffer(mp_FRAME_HD.get_obj(), dtype="I").reshape(HD_RESOLUTION)
+    sd_nparray = np.frombuffer(mp_FRAME_SD.get_obj(), dtype="I").reshape(SD_RESOLUTION)
+
     json_config = {}
     with open('./config.json', 'r') as json_file:
         json_config = json.load(json_file)
@@ -114,6 +124,25 @@ if __name__=='__main__':
                              HD_Frame=mp_FRAME_HD, SD_Frame=mp_FRAME_SD)
     rtsp_stream.start()
     print('Start Successful!')
-    time.sleep(5)
+    
+    start_time = time.time()
+    while (time.time() - start_time) <= 30:
+        hd_frame = sd_nparray.astype("uint8").copy()
+        sd_frame = sd_nparray.astype("uint8").copy()
+        
+        cv2.imshow('RTSP Streamming Result', hd_frame)
+        # cv2.imshow('RTSP Streamming Result', sd_frame)
+        
+        try:
+            mp_FRAME_HD.release()
+            mp_FRAME_SD.release()
+        except ValueError:
+            pass
+
+            if cv2.waitKey(1) == 27:
+                break
+        time.sleep(0.001)
+    
+    cv2.destroyAllWindows()
     rtsp_stream.stop()    
     print('Stop Successful!')
